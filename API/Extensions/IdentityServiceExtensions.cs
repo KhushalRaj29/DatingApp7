@@ -18,9 +18,10 @@ namespace API.Extensions
             ValidateIssuer = false,
             ValidateAudience = false,
         };
-    });
+    }); 
 
             return services;
         }
     }
 }
+
