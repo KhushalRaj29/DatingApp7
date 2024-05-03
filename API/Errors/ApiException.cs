@@ -4,9 +4,9 @@ namespace API.Errors
     {
         public ApiException(int statusCode, string message, string details)
         {
-            statusCode = StatusCode;
-            message = Message;
-            details = Details;
+            StatusCode = statusCode;
+            Message = message;
+            Details = details;
         }
 
         public int StatusCode { get; set; }
