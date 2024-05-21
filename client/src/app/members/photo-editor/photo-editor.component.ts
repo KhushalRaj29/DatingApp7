@@ -13,6 +13,7 @@ import { MembersService } from '../../_services/members.service';
   templateUrl: './photo-editor.component.html',
   styleUrl: './photo-editor.component.css'
 })
+
 export class PhotoEditorComponent implements OnInit { 
   @Input() member:Member | undefined;
   uploader:FileUploader | undefined;
