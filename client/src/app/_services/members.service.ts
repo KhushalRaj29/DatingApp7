@@ -27,11 +27,11 @@ export class MembersService {
       map(response=>{
         if(response.body){
           console.log(response);
-          this.paginatedResult.reuslt=response.body;
+          this.paginatedResult.result=response.body;
         }
         const pagination=response.headers.get('Pagination');
         if(pagination){
-          this.paginatedResult.reuslt=JSON.parse(pagination);
+          this.paginatedResult.result=JSON.parse(pagination);
         }
         return this.paginatedResult;
       })      
