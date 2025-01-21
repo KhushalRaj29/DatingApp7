@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Member } from '../../_models/member';
 import { MembersService } from '../../_services/members.service';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { Pagination } from '../../_models/pagination';
+import { userParams } from '../../_models/userParams';
+import { AccountService } from '../../_services/account.service';
+import { User } from '../../_models/user';
 
 @Component({
   selector: 'app-member-list',
@@ -13,10 +16,20 @@ export class MemberListComponent implements OnInit {
   // members$:Observable<Member[]> | undefined;
   members:Member[]=[];
   pagination:Pagination | undefined;
-  pageNumber=1;
-  pageSize=5;
+  userParams:userParams | undefined;
+  user:User | undefined;
+  genderList=[{value: 'male', display: 'Males'},{value: 'female', display: 'Females'}]
    
-  constructor(private memberService:MembersService){}
+  constructor(private memberService:MembersService, private accountService:AccountService){
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+      next:user=>{
+        if(user){
+          this.userParams=new userParams(user);
+          this.user=user;
+        }
+      }
+    })
+  }
 
   ngOnInit(): void {  
     // this.members$=this.memberService.getMembers();
@@ -24,7 +37,8 @@ export class MemberListComponent implements OnInit {
   }
 
   loadMembers(){
-    this.memberService.getMembers(this.pageNumber, this.pageSize).subscribe({
+    if(!this.userParams) return;
+    this.memberService.getMembers(this.userParams).subscribe({
       next:response=>{
         if(response.result && response.pagination){
           this.members=response.result;
@@ -34,9 +48,16 @@ export class MemberListComponent implements OnInit {
     })
   }
 
+  resetFilter(){
+    if(this.user){
+      this.userParams= new userParams(this.user);
+      this.loadMembers();
+    }
+  }
+
   pageChanged(event:any){
-    if(this.pageNumber!==event.page){
-      this.pageNumber=event.page;
+    if(this.userParams && this.userParams?.pageNumber!==event.page){
+      this.userParams.pageNumber=event.page;
       this.loadMembers();
     }
     
